@@ -36,7 +36,7 @@ def get_user() -> Union[dict, None]:
     except Exception:
         return None
 
-        
+
 @babel.localeselector
 def get_locale() -> Union[str, None]:
     '''Define get_locale'''
