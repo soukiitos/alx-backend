@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
 '''Basic Flask setup'''
-from flask import Flask
+from flask import Flask, render_template
 from flask_babel import Babel
-from routes.routes_1 import app_routes
 
 
 app = Flask(__name__)
 babel = Babel(app)
 
 
-class Config(object):
+class Config:
     """Define Config"""
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
-app.config.from_object(Config)
-app.register_blueprint(app_routes)
+app.config.from_object('1-app.Config')
+
+
+@app.route("/", methods=["GEt"], strict_slashes=False)
+def hello_world() -> str:
+    '''Define hello_world'''
+    return render_template('1-index.html')
 
 
 if __name__ == "__main__":
