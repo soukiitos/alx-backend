@@ -19,7 +19,7 @@ app.config.from_object('4-app.Config')
 
 
 @babel.localeselector
-def get_locale() -> Union[str, None]:
+def get_locale() -> str:
     '''Define get_locale'''
     locale = request.args.get('locale')
     if locale and locale in app.config['LANGUAGES']:
