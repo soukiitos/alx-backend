@@ -37,6 +37,13 @@ def before_request():
 def get_locale() -> str:
     '''Define get_locale'''
     locale = request.args.get('locale')
+    if locale in app.config['LANGUAGES']:
+        return locale
+    if g.user:
+        locale = g.user.get("locale")
+        if locale and locale in app.config['LANGUAGES']:
+            return locale
+    locale = request.headers.get('locale')
     if locale and locale in app.config['LANGUAGES']:
         return locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
@@ -59,4 +66,4 @@ def get_user() -> Union[dict, None]:
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run()
