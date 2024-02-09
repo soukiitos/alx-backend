@@ -3,8 +3,11 @@
 from typing import Union
 from flask import Flask, request, render_template, g
 from flask_babel import Babel
-from config import Config
 from os import getenv
+
+app = Flask(__name__)
+babel = Babel(app)
+
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -14,11 +17,7 @@ users = {
 }
 
 
-app = Flask(__name__)
-babel = Babel(app)
-
-
-class Config(object):
+class Config:
     """Define Config class"""
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = 'en'
@@ -28,21 +27,25 @@ class Config(object):
 app.config.from_object('5-app.Config')
 
 
-@app.route('/', methods=['GET'], strict_slashes=False)
-def index() -> str:
-    '''Define index'''
-    return render_template('5-index.html')
+@app.before_request
+def before_request():
+    '''Define before_request'''
+    g.user = get_user()
 
 
 @babel.localeselector
 def get_locale() -> str:
     '''Define get_locale'''
-    if request.args.get('locale'):
-        locale = request.args.get('locale')
-        if locale in app.config['LANGUAGES']:
-            return locale
-    else:
-        return request.accept_languages.best_match(app.config['LANGUAGES'])
+    locale = request.args.get('locale')
+    if locale and locale in app.config['LANGUAGES']:
+        return locale
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
+
+@app.route('/', methods=['GET'], strict_slashes=False)
+def hello_world() -> str:
+    '''Define index'''
+    return render_template('5-index.html')
 
 
 def get_user() -> Union[dict, None]:
@@ -55,13 +58,5 @@ def get_user() -> Union[dict, None]:
         return None
 
 
-@app.before_request
-def before_request():
-    '''Define before_request'''
-    g.user = get_user()
-
-
 if __name__ == "__main__":
-    host = getenv("API_HOST", "0.0.0.0")
-    port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port)
+    app.run(host="0.0.0.0", port="5000")
