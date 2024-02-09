@@ -50,11 +50,11 @@ def hello_world() -> str:
 
 def get_user() -> Union[dict, None]:
     '''Define get_user'''
-    if request.args.get('login_as'):
-        user = int(request.args.get('login_as'))
-        return users.get(user)
-    else:
-        return users.get(1)
+    try:
+        login_as = request.args.get('login_as', None)
+        user = users[int(login_as)]
+    except Exception:
+        user = None
 
 
 if __name__ == "__main__":
