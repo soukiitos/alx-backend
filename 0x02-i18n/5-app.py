@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''Mock logging in'''
 from typing import Union
-from flask import Flask, request, render_template, g
+from flask import Flask, render_template, request, g
 from flask_babel import Babel
 from os import getenv
 
@@ -52,10 +52,9 @@ def get_user() -> Union[dict, None]:
     '''Define get_user'''
     if request.args.get('login_as'):
         user = int(request.args.get('login_as'))
-        if user in users:
-            return users.get(user)
+        return users.get(user)
     else:
-        return None
+        return users.get(1)
 
 
 if __name__ == "__main__":
